@@ -1,23 +1,34 @@
 import { Cards } from "./app";
+import "./single-card.css"
 
 interface CardProps {
   card: Cards;
   handleChoice: (card: Cards) => void;
+  flipped: Cards | boolean;
+  disabled: boolean;
 }
 
-const SingleCard: React.FC<CardProps> = ({ card, handleChoice }) => {
+const SingleCard: React.FC<CardProps> = ({
+  card,
+  handleChoice,
+  flipped,
+  disabled,
+}) => {
   const handleClick = () => {
-    handleChoice(card);
+    if (!disabled) {
+      handleChoice(card);
+    }
   };
+
   return (
     <div className="card">
-      <div>
-        <img src={card.src} alt="card front" className="front" />
+      <div className={flipped ? "flipped" : ""}>
+        <img className="front" src={card.src} alt="card front" />
         <img
-          src={"/img/cover.png"}
-          alt="card back"
           className="back"
+          src="/img/cover.png"
           onClick={handleClick}
+          alt="cover"
         />
       </div>
     </div>
