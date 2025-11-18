@@ -1,13 +1,12 @@
 "use client";
-
 import Script from "next/script";
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const [isInEitaa, setIsInEitaa] = useState(false);
   const [version, setVersion] = useState("");
+  const [isExpanded, setIsExpanded] = useState(true); // جدید: وضعیت ارتفاع
 
-  // فقط یک بار ready() صدا بزنیم
   useEffect(() => {
     if (window.Eitaa?.WebApp) {
       const webApp = window.Eitaa.WebApp;
@@ -16,27 +15,68 @@ export default function Home() {
       setVersion(webApp.version);
       setIsInEitaa(true);
 
-      webApp.ready(); // خیلی مهمه! به ایتا می‌گه اپ آماده است
-      webApp.expand(); // اختیاری: تمام صفحه رو بگیره (توصیه میشه)
+      webApp.ready();
+      webApp.expand();
+      setIsExpanded(true); // اول کامل باز بشه
+
+      // قابلیت جدید ۱: وقتی روی دکمه برگشت کلیک شد → تأیید بگیر
+      const onBackButtonClicked = () => {
+        webApp.showConfirm(
+          "آیا مطمئن هستید که می‌خواهید خارج شوید؟",
+          (confirmed) => {
+            if (confirmed) {
+              webApp.close(); // فقط اگه تأیید کرد بسته بشه
+            }
+            // اگه لغو کرد → هیچی، برنامک باز می‌مونه
+          }
+        );
+      };
+
+      // فعال کردن دکمه برگشت + ثبت هندلر
+      webApp.BackButton.show();
+      webApp.BackButton.onClick(onBackButtonClicked);
+
+      // تمیز کردن موقع unmount (خیلی مهمه!)
+      return () => {
+        webApp.BackButton.offClick(onBackButtonClicked);
+        webApp.BackButton.hide();
+      };
     }
   }, []);
+
+  // قابلیت جدید ۲: کنترل دستی ارتفاع (فول اسکرین / کوچک)
+  const toggleExpand = () => {
+    if (!window.Eitaa?.WebApp) return;
+
+    if (isExpanded) {
+      // کوچک کردن (در اندروید با عدم فراخوانی expand کار می‌کنه + CSS)
+      document.body.style.height = "70vh";
+      document.body.style.overflow = "hidden";
+      setIsExpanded(false);
+    } else {
+      // دوباره تمام صفحه
+      window.Eitaa.WebApp.expand();
+      document.body.style.height = "100vh";
+      document.body.style.overflow = "auto";
+      setIsExpanded(true);
+    }
+  };
 
   const handleClose = () => {
     window.Eitaa?.WebApp?.close();
   };
 
   const handleShowConfirm = () => {
-    window.Eitaa?.WebApp?.showConfirm("آیا مطمئن هستید؟", (confirmed) => {
-      if (confirmed) {
-        alert("تأیید شد ");
-      } else {
-        alert("لغو شد ");
+    window.Eitaa?.WebApp?.showConfirm(
+      "آیا مطمئن هستید؟",
+      (confirmed) => {
+        alert(confirmed ? "تأیید شد" : "لغو شد");
       }
-    });
+    );
   };
 
   const handleShowAlert = () => {
-    window.Eitaa?.WebApp?.showAlert("سلام! این یک هشدار ساده است ");
+    window.Eitaa?.WebApp?.showAlert("سلام! این یک هشدار ساده است");
   };
 
   const handleOpenLink = () => {
@@ -45,7 +85,6 @@ export default function Home() {
 
   return (
     <>
-      {/*Eitaa Script */}
       <Script
         src="https://developer.eitaa.com/eitaa-web-app.js"
         strategy="beforeInteractive"
@@ -59,253 +98,76 @@ export default function Home() {
         </h1>
 
         {isInEitaa ? (
-          <div className="space-y-4 text-center">
-            <p className="text-green-600 font-medium">
+          <div className="space-y-6 text-center">
+            <p className="text-green-600 font-medium text-lg">
               داخل ایتا هستی! نسخه SDK: {version}
             </p>
-            <div>
-              <section className="bg-gray-900 p-4 rounded-lg">
-                <h2 className="text-xl font-bold mb-3">اطلاعات اولیه</h2>
-              </section>
-              <section>
-                <div className="grid grid-cols-2 gap-3 text-sm">
-                  <button
-                    onClick={() =>
-                      addLog(
-                        `initData: ${window.Eitaa?.WebApp?.initData?.slice(
-                          0,
-                          100
-                        )}...`
-                      )
-                    }
-                    className="btn"
-                  >
-                    نمایش initData (کوتاه)
-                  </button>
-                  <button
-                    onClick={() =>
-                      addLog(
-                        JSON.stringify(window.Eitaa?.WebApp?.initDataUnsafe)
-                      )
-                    }
-                    className="btn"
-                  >
-                    نمایش initDataUnsafe
-                  </button>
-                  <button
-                    onClick={() =>
-                      addLog(`نسخه: ${window.Eitaa?.WebApp?.version}`)
-                    }
-                    className="btn"
-                  >
-                    نسخه SDK
-                  </button>
-                  <button
-                    onClick={() =>
-                      addLog(`تم: ${window.Eitaa?.WebApp?.colorScheme}`)
-                    }
-                    className="btn"
-                  >
-                    تم فعلی
-                  </button>
-                </div>
-              </section>
 
-              {/* ۲. UI و رنگ‌ها */}
-              <section className="bg-blue-500 p-4 rounded-lg">
-                <h2 className="text-xl font-bold mb-3">رنگ و ظاهر</h2>
-                <div className="grid grid-cols-3 gap-3">
-                  <button
-                    onClick={() =>
-                      window.Eitaa?.WebApp?.setHeaderColor("#ff0000") &&
-                      addLog("هدر قرمز شد")
-                    }
-                    className="btn"
-                  >
-                    هدر قرمز
-                  </button>
-                  <button
-                    onClick={() =>
-                      window.Eitaa?.WebApp?.setBackgroundColor("#00ff00") &&
-                      addLog("پس‌زمینه سبز شد")
-                    }
-                    className="btn"
-                  >
-                    پس‌زمینه سبز
-                  </button>
-                  <button
-                    onClick={() =>
-                      window.Eitaa?.WebApp?.setHeaderColor("bg_color") &&
-                      addLog("هدر به تم برگشت")
-                    }
-                    className="btn"
-                  >
-                    ریست هدر
-                  </button>
-                </div>
-              </section>
-
-              {/* ۳. دکمه‌ها */}
-              <section className="bg-green-500 p-4 rounded-lg">
-                <h2 className="text-xl font-bold mb-3">دکمه‌ها</h2>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => {
-                      window.Eitaa?.WebApp?.MainButton.setText("تست کلیک!");
-                      window.Eitaa?.WebApp?.MainButton.show();
-                      addLog("دکمه اصلی نمایش داده شد");
-                    }}
-                    className="btn"
-                  >
-                    نمایش MainButton
-                  </button>
-                  <button
-                    onClick={() =>
-                      window.Eitaa?.WebApp?.BackButton.show() &&
-                      addLog("دکمه برگشت نمایش داده شد")
-                    }
-                    className="btn"
-                  >
-                    نمایش BackButton
-                  </button>
-                  <button
-                    onClick={() =>
-                      window.Eitaa?.WebApp?.MainButton.hide() &&
-                      addLog("دکمه اصلی مخفی شد")
-                    }
-                    className="btn"
-                  >
-                    مخفی کردن MainButton
-                  </button>
-                  <button
-                    onClick={() => window.Eitaa?.WebApp?.BackButton.hide()}
-                    className="btn"
-                  >
-                    مخفی کردن BackButton
-                  </button>
-                </div>
-              </section>
-
-              {/* ۴. پاپ‌آپ‌ها */}
-              <section className="bg-purple-500 p-4 rounded-lg">
-                <h2 className="text-xl font-bold mb-3">پاپ‌آپ و دیالوگ</h2>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() =>
-                      window.Eitaa?.WebApp?.showAlert(
-                        "این یک هشدار ساده است!",
-                        () => addLog("هشدار بسته شد")
-                      )
-                    }
-                    className="btn"
-                  >
-                    showAlert
-                  </button>
-                  <button
-                    onClick={() =>
-                      window.Eitaa?.WebApp?.showConfirm("مطمئنی؟", (ok) =>
-                        addLog(ok ? "تأیید شد" : "لغو شد")
-                      )
-                    }
-                    className="btn"
-                  >
-                    showConfirm
-                  </button>
-                  <button
-                    onClick={() =>
-                      window.Eitaa?.WebApp?.showPopup(
-                        {
-                          title: "عنوان",
-                          message: "این یک پاپ‌آپ کامل است",
-                          buttons: [
-                            { type: "ok", text: "باشه" },
-                            { type: "cancel" },
-                          ],
-                        },
-                        (id) => addLog(`دکمه ${id} کلیک شد`)
-                      )
-                    }
-                    className="btn"
-                  >
-                    showPopup کامل
-                  </button>
-                  <button
-                    onClick={() =>
-                      window.Eitaa?.WebApp?.showScanQrPopup(
-                        { text: "QR اسکن کن" },
-                        (text) => addLog(`QR اسکن شد: ${text}`)
-                      )
-                    }
-                    className="btn"
-                  >
-                    اسکن QR
-                  </button>
-                </div>
-              </section>
-
-              {/* ۵. لینک و مجوز */}
-              <section className="bg-yellow-500 p-4 rounded-lg">
-                <h2 className="text-xl font-bold mb-3">لینک و مجوز</h2>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() =>
-                      window.Eitaa?.WebApp?.openLink("https://eitaa.com")
-                    }
-                    className="btn"
-                  >
-                    باز کردن eitaa.com
-                  </button>
-                  <button
-                    onClick={() =>
-                      window.Eitaa?.WebApp?.requestWriteAccess((ok) =>
-                        addLog(ok ? "اجازه ارسال پیام داده شد" : "رد شد")
-                      )
-                    }
-                    className="btn"
-                  >
-                    درخواست ارسال پیام
-                  </button>
-                </div>
-              </section>
-
-              {/* ۶. ناوبری */}
-              <section className="bg-red-500 p-4 rounded-lg">
-                <h2 className="text-xl font-bold mb-3">ناوبری</h2>
-                <div className="grid grid-cols-2 gap-3">
-                  <button
-                    onClick={() => {
-                      window.Eitaa?.WebApp?.expand();
-                      addLog("گسترش داده شد");
-                    }}
-                    className="btn"
-                  >
-                    expand()
-                  </button>
-                  <button
-                    onClick={() => window.Eitaa?.WebApp?.close()}
-                    className="btn bg-red-600 text-white"
-                  >
-                    بستن برنامک (close)
-                  </button>
-                </div>
-              </section>
+            {/* دکمه جدید: کنترل ارتفاع */}
+            <div className="p-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
+              <button
+                onClick={toggleExpand}
+                className="px-8 py-4 bg-white text-purple-600 font-bold rounded-lg shadow-lg hover:shadow-2xl transition transform hover:scale-105"
+              >
+                {isExpanded ? "کوچک کردن برنامک" : "تمام صفحه کردن"}
+              </button>
+              <p className="text-white text-sm mt-2">
+                وضعیت فعلی: {isExpanded ? "تمام صفحه" : "کوچک شده"}
+              </p>
             </div>
 
-            <div className="mt-8 p-4 bg-gray-500 rounded-lg">
-              <p>user id: {window.Eitaa?.WebApp?.initDataUnsafe?.user?.id}</p>
-              <p>
-                نام: {window.Eitaa?.WebApp?.initDataUnsafe?.user?.first_name}
+            <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
+              <button
+                onClick={handleClose}
+                className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+              >
+                بستن برنامک
+              </button>
+
+              <button
+                onClick={handleShowConfirm}
+                className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+              >
+                تأیید (Confirm)
+              </button>
+
+              <button
+                onClick={handleShowAlert}
+                className="px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition"
+              >
+                هشدار (Alert)
+              </button>
+
+              <button
+                onClick={handleOpenLink}
+                className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
+              >
+                باز کردن لینک
+              </button>
+            </div>
+
+            {/* راهنما */}
+            <div className="mt-10 p-6 bg-yellow-50 border-2 border-yellow-300 rounded-xl">
+              <p className="font-bold text-lg text-yellow-800">
+                دکمه برگشت بالا فعال است!
               </p>
+              <p className="text-sm text-gray-700 mt-2">
+                روش کلیک کن → یه تأیید میاد → فقط اگه بگی "باشه" برنامک بسته میشه
+              </p>
+            </div>
+
+            <div className="mt-8 p-4 bg-gray-100 rounded-lg">
+              <p>user id: {window.Eitaa?.WebApp?.initDataUnsafe?.user?.id}</p>
+              <p>نام: {window.Eitaa?.WebApp?.initDataUnsafe?.user?.first_name}</p>
             </div>
           </div>
         ) : (
           <div className="text-center text-gray-600">
-            <p className="text-xl mb-4">در حال بارگذاری SDK ایتا...</p>
+            <p className="text-xl mb-4">
+              در حال بارگذاری SDK ایتا...
+            </p>
             <p className="text-sm">
               این صفحه فقط داخل پیام‌رسان <strong>ایتا</strong> کار می‌کند.
-            </p>
-            <p className="mt-4 text-xs text-white">
-              برای تست، برنامک رو از داخل ایتا باز کن.
             </p>
           </div>
         )}
