@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [isInEitaa, setIsInEitaa] = useState(false);
   const [version, setVersion] = useState("");
-  const [isExpanded, setIsExpanded] = useState(true); // جدید: وضعیت ارتفاع
+  const [isExpanded, setIsExpanded] = useState(true); // جدید: برای کنترل ارتفاع
 
   useEffect(() => {
     if (window.Eitaa?.WebApp) {
@@ -17,44 +17,43 @@ export default function Home() {
 
       webApp.ready();
       webApp.expand();
-      setIsExpanded(true); // اول کامل باز بشه
+      setIsExpanded(true);
 
-      // قابلیت جدید ۱: وقتی روی دکمه برگشت کلیک شد → تأیید بگیر
-      const onBackButtonClicked = () => {
+      // قابلیت ۱: وقتی روی دکمه برگشت کلیک شد → تأیید بگیر
+      const handleBackButton = () => {
         webApp.showConfirm(
-          "آیا مطمئن هستید که می‌خواهید خارج شوید؟",
+          "آیا مطمئن هستید که می‌خواهید از برنامک خارج شوید؟",
           (confirmed) => {
             if (confirmed) {
-              webApp.close(); // فقط اگه تأیید کرد بسته بشه
+              webApp.close();
             }
-            // اگه لغو کرد → هیچی، برنامک باز می‌مونه
+            // اگه لغو کرد، هیچی — برنامک باز می‌مونه
           }
         );
       };
 
-      // فعال کردن دکمه برگشت + ثبت هندلر
       webApp.BackButton.show();
-      webApp.BackButton.onClick(onBackButtonClicked);
+      webApp.BackButton.onClick(handleBackButton);
 
-      // تمیز کردن موقع unmount (خیلی مهمه!)
+      // تمیز کردن موقع unmount
       return () => {
-        webApp.BackButton.offClick(onBackButtonClicked);
+        webApp.BackButton.offClick(handleBackButton);
         webApp.BackButton.hide();
       };
     }
   }, []);
 
-  // قابلیت جدید ۲: کنترل دستی ارتفاع (فول اسکرین / کوچک)
+  // قابلیت ۲: دکمه دستی برای کنترل ارتفاع
   const toggleExpand = () => {
     if (!window.Eitaa?.WebApp) return;
 
     if (isExpanded) {
-      // کوچک کردن (در اندروید با عدم فراخوانی expand کار می‌کنه + CSS)
-      document.body.style.height = "70vh";
+      // کوچک کردن
+      document.body.style.height = "65vh";
       document.body.style.overflow = "hidden";
       setIsExpanded(false);
     } else {
-      // دوباره تمام صفحه
+      // تمام صفحه
       window.Eitaa.WebApp.expand();
       document.body.style.height = "100vh";
       document.body.style.overflow = "auto";
@@ -62,26 +61,14 @@ export default function Home() {
     }
   };
 
-  const handleClose = () => {
-    window.Eitaa?.WebApp?.close();
-  };
-
+  const handleClose = () => window.Eitaa?.WebApp?.close();
   const handleShowConfirm = () => {
-    window.Eitaa?.WebApp?.showConfirm(
-      "آیا مطمئن هستید؟",
-      (confirmed) => {
-        alert(confirmed ? "تأیید شد" : "لغو شد");
-      }
-    );
+    window.Eitaa?.WebApp?.showConfirm("آیا مطمئن هستید؟", (confirmed) => {
+      alert(confirmed ? "تأیید شد" : "لغو شد");
+    });
   };
-
-  const handleShowAlert = () => {
-    window.Eitaa?.WebApp?.showAlert("سلام! این یک هشدار ساده است");
-  };
-
-  const handleOpenLink = () => {
-    window.Eitaa?.WebApp?.openLink("https://eitaa.com");
-  };
+  const handleShowAlert = () => window.Eitaa?.WebApp?.showAlert("سلام! این یک هشدار ساده است");
+  const handleOpenLink = () => window.Eitaa?.WebApp?.openLink("https://eitaa.com");
 
   return (
     <>
@@ -99,62 +86,42 @@ export default function Home() {
 
         {isInEitaa ? (
           <div className="space-y-6 text-center">
+
+            {/* دکمه جدید: کنترل ارتفاع — اضافه شد */}
+            <div className="p-5 bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl shadow-xl">
+              <button
+                onClick={toggleExpand}
+                className="px-10 py-5 bg-white text-indigo-700 font-bold text-xl rounded-xl shadow-2xl hover:shadow-purple-500 transition transform hover:scale-110"
+              >
+                {isExpanded ? "کوچک کردن برنامک" : "تمام صفحه کردن"}
+              </button>
+              <p className="text-white mt-3 text-lg">
+                وضعیت: {isExpanded ? "تمام صفحه" : "کوچک شده (65vh)"}
+              </p>
+            </div>
+
             <p className="text-green-600 font-medium text-lg">
               داخل ایتا هستی! نسخه SDK: {version}
             </p>
 
-            {/* دکمه جدید: کنترل ارتفاع */}
-            <div className="p-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl">
-              <button
-                onClick={toggleExpand}
-                className="px-8 py-4 bg-white text-purple-600 font-bold rounded-lg shadow-lg hover:shadow-2xl transition transform hover:scale-105"
-              >
-                {isExpanded ? "کوچک کردن برنامک" : "تمام صفحه کردن"}
-              </button>
-              <p className="text-white text-sm mt-2">
-                وضعیت فعلی: {isExpanded ? "تمام صفحه" : "کوچک شده"}
-              </p>
-            </div>
-
+            {/* همه دکمه‌های قبلی — همشون هستن! */}
             <div className="grid grid-cols-2 gap-4 max-w-md mx-auto">
-              <button
-                onClick={handleClose}
-                className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
-              >
+              <button onClick={handleClose} className="px-6 py-3 bg-red-500 text-white rounded-lg hover:bg-red-600 transition">
                 بستن برنامک
               </button>
 
-              <button
-                onClick={handleShowConfirm}
-                className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
-              >
+              <button onClick={handleShowConfirm} className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
                 تأیید (Confirm)
               </button>
 
-              <button
-                onClick={handleShowAlert}
-                className="px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition"
-              >
+              <button onClick={handleShowAlert} className="px-6 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition">
                 هشدار (Alert)
               </button>
 
-              <button
-                onClick={handleOpenLink}
-                className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition"
-              >
+              <button onClick={handleOpenLink} className="px-6 py-3 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
                 باز کردن لینک
               </button>
-            </div>
-
-            {/* راهنما */}
-            <div className="mt-10 p-6 bg-yellow-50 border-2 border-yellow-300 rounded-xl">
-              <p className="font-bold text-lg text-yellow-800">
-                دکمه برگشت بالا فعال است!
-              </p>
-              <p className="text-sm text-gray-700 mt-2">
-                روش کلیک کن → یه تأیید میاد → فقط اگه بگی "باشه" برنامک بسته میشه
-              </p>
-            </div>
+            </div>           
 
             <div className="mt-8 p-4 bg-gray-100 rounded-lg">
               <p>user id: {window.Eitaa?.WebApp?.initDataUnsafe?.user?.id}</p>
@@ -163,9 +130,7 @@ export default function Home() {
           </div>
         ) : (
           <div className="text-center text-gray-600">
-            <p className="text-xl mb-4">
-              در حال بارگذاری SDK ایتا...
-            </p>
+            <p className="text-xl mb-4">در حال بارگذاری SDK ایتا...</p>
             <p className="text-sm">
               این صفحه فقط داخل پیام‌رسان <strong>ایتا</strong> کار می‌کند.
             </p>
