@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function EitaaProvider() {
-  const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
@@ -22,10 +21,9 @@ export default function EitaaProvider() {
       if (window.history.length > 1) {
         router.back();
       } else {
-        // webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (ok) => {
-        //   if (ok) webApp.close();
-        // });
-        webApp.close();
+        webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (ok) => {
+          if (ok) webApp.close();
+        });
       }
     };
 
@@ -37,7 +35,7 @@ export default function EitaaProvider() {
     return () => {
       webApp.BackButton.offClick(handleBack);
     };
-  }, [pathname, router]); // ← این باعث می‌شه هر بار صفحه عوض بشه دوباره اجرا بشه!
+  }, []); // ← این باعث می‌شه هر بار صفحه عوض بشه دوباره اجرا بشه!
 
   // این کامپوننت هیچی رندر نمی‌کنه
   return null;
