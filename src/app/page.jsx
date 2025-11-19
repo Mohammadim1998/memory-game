@@ -72,7 +72,7 @@ export default function Home() {
     window.Eitaa?.WebApp?.showAlert("سلام! این یک هشدار ساده است");
   const handleOpenLink = () =>
     window.Eitaa?.WebApp?.openLink("https://eitaa.com");
-  const showPlatform = () => window.Eitaa?.webApp.showAlert(platorm);
+  const showPlatform = () => window.Eitaa?.WebApp.showAlert(platorm);
   
   return (
     <>
