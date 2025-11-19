@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import Script from "next/script";
 import { useEffect, useState } from "react";
 
@@ -13,7 +14,6 @@ export default function Home() {
       const webApp = window.Eitaa.WebApp;
       setPlatform(webApp.platform);
 
-      console.log("Eitaa WebApp Loaded!", webApp.version);
       setVersion(webApp.version);
       setIsInEitaa(true);
       webApp.isVerticalSwipesEnabled = false;
@@ -25,15 +25,18 @@ export default function Home() {
 
       // قابلیت جدید ۱: دکمه برگشت + تأیید خروج
       const handleBackButton = () => {
-        webApp.showConfirm(
-          "آیا مطمئن هستید که می‌خواهید از برنامک خارج شوید؟",
-          (confirmed) => {
-            if (confirmed) {
-              webApp.close(); // فقط اگه تأیید کرد بسته بشه
+        if (window.history.length > 1) {
+          // اگر صفحه قبلی وجود داره → برگرد به عقب
+          router.back();
+        } else {
+          // اگر اولین صفحه است → تأیید خروج
+          webApp.showConfirm(
+            "آیا می‌خواهید از برنامک خارج شوید؟",
+            (confirmed) => {
+              if (confirmed) webApp.close();
             }
-            // اگه لغو کرد → برنامک باز می‌مونه
-          }
-        );
+          );
+        }
       };
 
       webApp.BackButton.show();
@@ -111,6 +114,27 @@ export default function Home() {
               داخل ایتا هستی! نسخه SDK: {version}
             </p>
 
+            <div className="grid grid-cols-2 gap-6 max-w-lg mx-auto">
+              <Link
+                href={"/tel"}
+                className="px-8 py-5 bg-blue-600 text-white font-bold rounded-xl hover:bg-red-700 transition shadow-lg"
+              >
+                Telegram page
+              </Link>
+              <Link
+                href={"/eitaa"}
+                className="px-8 py-5 bg-purple-600 text-white font-bold rounded-xl hover:bg-red-700 transition shadow-lg"
+              >
+                eitaa page
+              </Link>
+              <Link
+                href={"/whats"}
+                className="px-8 py-5 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700 transition shadow-lg"
+              >
+                whats page
+              </Link>
+            </div>
+            <hr />
             {/* همه دکمه‌های قبلی — هیچی حذف نشده! */}
             <div className="grid grid-cols-2 gap-6 max-w-lg mx-auto">
               <button
