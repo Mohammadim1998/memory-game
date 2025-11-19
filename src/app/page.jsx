@@ -11,7 +11,6 @@ export default function Home() {
   useEffect(() => {
     if (window.Eitaa?.WebApp) {
       const webApp = window.Eitaa.WebApp;
-      console.log("webApp ===>: ", webApp.platform);
       setPlatform(webApp.platform);
 
       console.log("Eitaa WebApp Loaded!", webApp.version);
@@ -73,7 +72,9 @@ export default function Home() {
   const handleOpenLink = () =>
     window.Eitaa?.WebApp?.openLink("https://eitaa.com");
   const showPlatform = () => window.Eitaa?.WebApp.showAlert(platorm);
-  
+  const handleChangeHeaderColor = () => {
+    window.Eitaa.WebApp.header_bg_color = "#2596be";
+  };
   return (
     <>
       <Script
@@ -134,6 +135,12 @@ export default function Home() {
                 className="px-8 py-5 bg-green-600 text-white font-bold rounded-xl hover:bg-green-700 transition shadow-lg"
               >
                 باز کردن لینک
+              </button>
+              <button
+                onClick={handleChangeHeaderColor}
+                className="px-8 py-5 bg-purple-600 text-white font-bold rounded-xl hover:bg-green-700 transition shadow-lg"
+              >
+                تغییر رنگ هدر
               </button>
             </div>
 
