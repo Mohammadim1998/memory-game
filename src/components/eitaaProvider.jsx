@@ -35,7 +35,7 @@ export default function EitaaProvider() {
     return () => {
       webApp.BackButton.offClick(handleBack);
     };
-  }, []); // ← این باعث می‌شه هر بار صفحه عوض بشه دوباره اجرا بشه!
+  }, [router]); // ← این باعث می‌شه هر بار صفحه عوض بشه دوباره اجرا بشه!
 
   // این کامپوننت هیچی رندر نمی‌کنه
   return null;
