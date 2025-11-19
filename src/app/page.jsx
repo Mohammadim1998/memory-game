@@ -6,11 +6,11 @@ export default function Home() {
 
   return (
     <main className="p-8 space-y-8">
-      <h1 className="text-4xl font-bold text-center text-purple-700">
+      <h1 className="text-4xl font-bold text-center text-white">
         برنامک حرفه‌ای ایتا
       </h1>
 
-      <p className="text-center text-green-600 text-xl font-bold">
+      <p className="text-center text-white text-xl font-bold">
         سلام {user?.first_name || "کاربر"}!
       </p>
 
