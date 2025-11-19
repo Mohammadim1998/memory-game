@@ -73,7 +73,7 @@ export default function Home() {
     window.Eitaa?.WebApp?.openLink("https://eitaa.com");
   const showPlatform = () => window.Eitaa?.WebApp.showAlert(platorm);
   const handleChangeHeaderColor = () => {
-    window.Eitaa.WebApp.header_bg_color = "#2596be";
+    window.Eitaa.WebApp.setHeaderColor("#2596be");
   };
   return (
     <>
