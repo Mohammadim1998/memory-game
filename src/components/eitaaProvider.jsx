@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 
 export default function EitaaProvider() {
   const router = useRouter();
+const pathname = usePathname();
 
   useEffect(() => {
     // صبر کن تا SDK لود بشه
@@ -20,7 +21,7 @@ export default function EitaaProvider() {
 
     // تابع هندلر اصلی
     const handleBack = () => {
-      if (window.history.length > 1) {
+      if (pathname !== "/") {
         router.back(); // برگشت به صفحه قبلی
       } else {
         webApp.showConfirm(
@@ -44,7 +45,9 @@ export default function EitaaProvider() {
     webApp.BackButton.onClick(handleBack);
 
     // وقتی کامپوننت unmount شد (مثلاً صفحه بسته شد)
-   
+    return () => {
+      webApp.BackButton.offClick(handleBack);
+    };
   }, []); // فقط یک بار اجرا بشه
 
   return null;
