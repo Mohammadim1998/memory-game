@@ -1,3 +1,4 @@
+import "./globals.css"
 import EitaaProvider from "@/components/eitaaProvider";
 import Script from "next/script";
 
