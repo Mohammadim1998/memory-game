@@ -16,6 +16,7 @@ export default function Home() {
       console.log("Eitaa WebApp Loaded!", webApp.version);
       setVersion(webApp.version);
       setIsInEitaa(true);
+      webApp.isVerticalSwipesEnabled = false;
 
       // آماده‌سازی اولیه
       webApp.ready();
