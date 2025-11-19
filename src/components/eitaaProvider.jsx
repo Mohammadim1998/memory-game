@@ -44,9 +44,7 @@ export default function EitaaProvider() {
     webApp.BackButton.onClick(handleBack);
 
     // وقتی کامپوننت unmount شد (مثلاً صفحه بسته شد)
-    return () => {
-      webApp.BackButton.offClick(handleBack);
-    };
+   
   }, []); // فقط یک بار اجرا بشه
 
   return null;
