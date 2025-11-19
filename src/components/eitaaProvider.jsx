@@ -23,7 +23,14 @@ export default function EitaaProvider() {
       if (window.history.length > 1) {
         router.back(); // برگشت به صفحه قبلی
       } else {
-        webApp.close(); // در صفحه اصلی → مستقیم ببند
+        webApp.showConfirm(
+          "آیا می‌خواهید از برنامک خارج شوید؟",
+          (confirmed) => {
+            if (confirmed) {
+              webApp.close();
+            }
+          }
+        );
       }
     };
 
