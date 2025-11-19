@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import Script from "next/script";
 import { useEffect, useState } from "react";
 
@@ -8,6 +9,7 @@ export default function Home() {
   const [version, setVersion] = useState("");
   const [isExpanded, setIsExpanded] = useState(true); // وضعیت ارتفاع (تمام صفحه یا کوچک)
   const [platorm, setPlatform] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (window.Eitaa?.WebApp) {
@@ -62,7 +64,7 @@ export default function Home() {
         webApp.BackButton.hide();
       };
     }
-  }, [isExpanded]); // isExpanded رو به dependency اضافه کردیم تا درست کار کنه
+  }, [isExpanded, router]); // isExpanded رو به dependency اضافه کردیم تا درست کار کنه
 
   // دکمه‌های قبلی — همه هستن!
   const handleClose = () => window.Eitaa?.WebApp?.close();
