@@ -22,9 +22,10 @@ export default function EitaaProvider() {
       if (window.history.length > 1) {
         router.back();
       } else {
-        webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (ok) => {
-          if (ok) webApp.close();
-        });
+        // webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (ok) => {
+        //   if (ok) webApp.close();
+        // });
+        webApp.close();
       }
     };
 
