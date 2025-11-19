@@ -1,36 +1,27 @@
-// app/page.tsx
 "use client";
-
 import Link from "next/link";
-import { useEffect, useState } from "react";
 
 export default function Home() {
-  const [user, setUser] = useState(null);
-
-  useEffect(() => {
-    if (window.Eitaa?.WebApp?.initDataUnsafe?.user) {
-      setUser(window.Eitaa.WebApp.initDataUnsafe.user);
-    }
-  }, []);
+  const user = typeof window !== "undefined" ? window.Eitaa?.WebApp?.initDataUnsafe?.user : null;
 
   return (
-    <main className="p-8 space-y-8 min-h-screen bg-gradient-to-b from-purple-50 to-pink-50">
-      <h1 className="text-4xl font-bold text-center text-purple-800 mt-10">
+    <main className="p-8 space-y-8">
+      <h1 className="text-4xl font-bold text-center text-purple-700">
         برنامک حرفه‌ای ایتا
       </h1>
 
-      <div className="text-center text-green-600 font-bold text-xl">
-        خوش آمدید، {user?.first_name || "در حال بارگذاری..."}
-      </div>
+      <p className="text-center text-green-600 text-xl font-bold">
+        سلام {user?.first_name || "کاربر"}!
+      </p>
 
-      <div className="grid grid-cols-1 gap-6 max-w-md mx-auto mt-10">
-        <Link href="/tel" className="py-6 bg-blue-600 text-white text-xl font-bold rounded-2xl text-center shadow-lg">
+      <div className="grid gap-6 max-w-md mx-auto">
+        <Link href="/tel" className="py-6 bg-blue-600 text-white text-center rounded-2xl text-xl font-bold">
           صفحه تلگرام
         </Link>
-        <Link href="/eitaa" className="py-6 bg-purple-600 text-white text-xl font-bold rounded-2xl text-center shadow-lg">
+        <Link href="/eitaa" className="py-6 bg-purple-600 text-white text-center rounded-2xl text-xl font-bold">
           صفحه ایتا
         </Link>
-        <Link href="/whats" className="py-6 bg-green-600 text-white text-xl font-bold rounded-2xl text-center shadow-lg">
+        <Link href="/whats" className="py-6 bg-red-600 text-white text-center rounded-2xl text-xl font-bold">
           صفحه واتساپ
         </Link>
       </div>
