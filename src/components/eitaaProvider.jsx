@@ -23,19 +23,14 @@ export default function EitaaProvider() {
       // در صفحه اصلی: مخفی کردن BackButton و فعال‌سازی تایید خروج
       webApp.BackButton.hide();
       webApp.enableClosingConfirmation();
-      
     } else {
       // در صفحات دیگر: نمایش BackButton با رفتار back
       webApp.BackButton.show();
       webApp.disableClosingConfirmation();
-      
+
       webApp.BackButton.onClick(() => {
         // استفاده از replace به جای back برای جلوگیری از حلقه بی‌نهایت
-        if (window.history.length > 1) {
-          router.back();
-        } else {
-          router.replace("/");
-        }
+        router.back();
       });
     }
 
@@ -53,7 +48,7 @@ export default function EitaaProvider() {
     };
 
     // اضافه کردن event listener برای بستن
-    webApp.onEvent('closingConfirmation', handleClosing);
+    webApp.onEvent("closingConfirmation", handleClosing);
 
     // Fullscreen فقط در موبایل
     if (["android", "ios", "mobile_web"].includes(webApp.platform)) {
@@ -63,7 +58,7 @@ export default function EitaaProvider() {
     // cleanup
     return () => {
       webApp.BackButton?.offClick();
-      webApp.offEvent('closingConfirmation', handleClosing);
+      webApp.offEvent("closingConfirmation", handleClosing);
     };
   }, [pathname, router]);
 
