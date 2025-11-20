@@ -23,31 +23,23 @@ export default function EitaaProvider() {
       webApp.requestFullscreen();
     }
 
-    // پاک کردن همه listenerهای قبلی
-    webApp.BackButton.offClick();
-    webApp.MainButton.offClick();
-
     if (isHome) {
       // صفحه اصلی → BackButton مخفی، MainButton با آیکون close
-      webApp.BackButton.hide();
-
-      // webApp.MainButton.setText("خروج");
-      // webApp.MainButton.show();
+      // webApp.BackButton.hide();
+      webApp.enableClosingConfirmation();
 
       webApp.BackButton.onClick(() => {
-        webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (confirmed) => {
-          if (confirmed) webApp.close();
-        });
+        // webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (confirmed) => {
+        //   if (confirmed) webApp.close();
+        // });
       });
     } else {
-      webApp.MainButton.hide();
-      webApp.BackButton.show();
-        router.back();
+      disableClosingConfirmation();
+      router.back();
     }
 
     // cleanup
     return () => {
-      webApp.BackButton.offClick();
       webApp.MainButton.offClick();
     };
   }, [pathname, router]);
