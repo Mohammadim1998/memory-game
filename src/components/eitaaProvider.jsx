@@ -26,39 +26,34 @@ export default function EitaaProvider() {
       webApp.requestFullscreen();
     }
 
-   const updateBackButton = () => {
-      webApp.BackButton.offClick(); // اول همه event listenerهای قبلی رو پاک کن
-
+    const handleBack = () => {
       if (pathname === "/") {
-        // صفحه اصلی: آیکون به ✕ تبدیل می‌شه + confirm
-        webApp.enableClosingConfirmation(); // این خط آیکون رو به ضربدر تغییر می‌ده
-        webApp.BackButton.show(); // مطمئن شو visible باشه
+        webApp.BackButton.show();
+        webApp.BackButton.isVisible = true;
+
+        webApp.enableClosingConfirmation();
 
         webApp.BackButton.onClick(() => {
-          webApp.showConfirm("آیا می‌خواهید از برنامه خارج شوید؟", (confirmed) => {
-            if (confirmed) webApp.close();
-          });
+          webApp.showConfirm(
+            "آیا می‌خواهید از برنامه خارج شوید؟",
+            (confirmed) => {
+              if (confirmed) webApp.close();
+            }
+          );
         });
       } else {
-        // صفحات دیگه: آیکون فلش معمولی + back
-        webApp.disableClosingConfirmation(); // آیکون به فلش برمی‌گرده
+        webApp.disableClosingConfirmation();
         webApp.BackButton.show();
-
-        webApp.BackButton.onClick(() => {
-          router.back();
-        });
+        router.back();
       }
     };
 
-    updateBackButton();
-
-    // webApp.BackButton.show();
-    // webApp.BackButton.offClick();
-    // webApp.BackButton.onClick(handleBack);
+    webApp.BackButton.show();
+    webApp.BackButton.offClick();
+    webApp.BackButton.onClick(handleBack);
 
     return () => {
-     webApp.BackButton.offClick();
-      webApp.disableClosingConfirmation();
+      webApp.BackButton.offClick(handleBack);
     };
   }, [pathname,router]);
 
