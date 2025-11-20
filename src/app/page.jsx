@@ -17,7 +17,7 @@ export default function Home() {
       setUser(window.Eitaa.WebApp.initDataUnsafe.user);
     }
     setWebApp(window.Eitaa.WebApp);
-    setPlatform(webApp.platform)
+    setPlatform(webApp?.platform)
   }, []);
 
   const handleShowPlatform = () => {
