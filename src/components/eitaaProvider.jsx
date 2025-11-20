@@ -11,7 +11,7 @@ export default function EitaaProvider() {
     if (!window.Eitaa?.WebApp) return;
 
     const webApp = window.Eitaa.WebApp;
-    const isHome = pathname === "/" || pathname === "/home"; // در صورت نیاز /home رو هم اضافه کن
+    const isHome = pathname === "/";
 
     webApp.ready();
     webApp.expand();
@@ -22,30 +22,27 @@ export default function EitaaProvider() {
       webApp.requestFullscreen();
     }
 
-    // خیلی مهم: اول همه listenerها رو پاک کن
+    // اول همه listenerها رو پاک کن
     webApp.BackButton.offClick();
 
     if (isHome) {
-      // صفحه اصلی → آیکون به ✕ تبدیل می‌شه
-      webApp.enableClosingConfirmation();   // این خط آیکون رو به ضربدر تبدیل می‌کنه
-      webApp.BackButton.show();              // دوباره show کن (حتماً بعد از enable)
+      // صفحه اصلی → ضربدر
+      webApp.enableClosingConfirmation(); // اول این
+      webApp.BackButton.show();            // بعد دوباره show (مهم!)
 
       webApp.BackButton.onClick(() => {
-        webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (confirmed) => {
-          if (confirmed) webApp.close();
+        webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (ok) => {
+          if (ok) webApp.close();
         });
       });
     } else {
-      // صفحات دیگر → آیکون معمولی ←
-      webApp.disableClosingConfirmation();   // آیکون به فلش برمی‌گرده
-      webApp.BackButton.show();
+      // صفحات دیگر → فلش معمولی
+      webApp.disableClosingConfirmation(); // اول این
+      webApp.BackButton.show();            // بعد show
 
-      webApp.BackButton.onClick(() => {
-        router.back();
-      });
+      webApp.BackButton.onClick(() => router.back());
     }
 
-    // cleanup
     return () => {
       webApp.BackButton.offClick();
     };
