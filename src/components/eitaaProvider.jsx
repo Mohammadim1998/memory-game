@@ -25,20 +25,45 @@ export default function EitaaProvider() {
     ) {
       webApp.requestFullscreen();
     }
+    // const handleBack = () => {
+    //   if (pathname !== "/") {
+    //     router.back();
+    //   } else if (pathname === "/") {
+    //     webApp.BackButton.show();
+    //     webApp.BackButton.isVisible = true;
+    //     webApp.enableClosingConfirmation();
+
+    //     webApp.showConfirm(
+    //       "آیا می‌خواهید از برنامه خارج شوید؟",
+    //       (confirmed) => {
+    //         if (confirmed) webApp.close();
+    //       }
+    //     );
+    //   }
+    // };
+
     const handleBack = () => {
-      if (pathname !== "/") {
-        router.back();
-      } else if (pathname === "/") {
+      if (pathname === "/") {
+        // وقتی در صفحه اصلی هستیم → دکمه بک به ضربدر تبدیل می‌شه و وب‌اپ رو می‌بنده
         webApp.BackButton.show();
         webApp.BackButton.isVisible = true;
-        webApp.enableClosingConfirmation();
 
-        webApp.showConfirm(
-          "آیا می‌خواهید از برنامه خارج شوید؟",
-          (confirmed) => {
-            if (confirmed) webApp.close();
-          }
-        );
+        webApp.enableClosingConfirmation(); // مهم: این باعث نمایش آیکون ضربدر می‌شه
+
+        webApp.BackButton.onClick(() => {
+          webApp.showConfirm(
+            "آیا می‌خواهید از برنامه خارج شوید؟",
+            (confirmed) => {
+              if (confirmed) webApp.close();
+            }
+          );
+        });
+      } else {
+        webApp.disableClosingConfirmation();
+        webApp.BackButton.show();
+        webApp.BackButton.onClick(() => {
+          router.back();
+        });
       }
     };
 
