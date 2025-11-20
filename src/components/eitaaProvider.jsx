@@ -21,7 +21,7 @@ export default function EitaaProvider() {
     // مدیریت BackButton بر اساس مسیر
     if (isHome) {
       // در صفحه اصلی: نمایش BackButton با رفتار close
-      webApp.BackButton.show();
+      webApp.BackButton.hide();
       
       webApp.enableClosingConfirmation();
       
