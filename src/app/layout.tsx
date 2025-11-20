@@ -1,5 +1,6 @@
-import "./globals.css"
+import "./globals.css";
 import EitaaProvider from "@/components/eitaaProvider";
+import ClientWrapper from "@/components/ClientWrapper";
 import Script from "next/script";
 
 export default function RootLayout({
@@ -8,20 +9,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="fa" dir="rtl">
-      <head />
-      <body>
-        {/* SDK رو یک بار لود کن */}
+    <html lang="fa" dir="rtl" suppressHydrationWarning>
+      <head>
         <Script
           src="https://developer.eitaa.com/eitaa-web-app.js"
           strategy="beforeInteractive"
         />
-
-        {/* این کامپوننت همیشه مونته و BackButton رو مدیریت می‌کنه */}
-        <EitaaProvider />
-
-        {/* محتوای صفحات */}
-        {children}
+      </head>
+      <body suppressHydrationWarning>
+        <ClientWrapper>
+          <EitaaProvider />
+          {children}
+        </ClientWrapper>
       </body>
     </html>
   );
