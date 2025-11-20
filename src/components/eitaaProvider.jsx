@@ -18,13 +18,14 @@ export default function EitaaProvider() {
     webApp.setHeaderColor("#155DFD");
 
     const platform = webApp.platform;
-    if (
-      platform === "android" ||
-      platform === "ios" ||
-      platform === "mobile_web"
-    ) {
-      webApp.requestFullscreen();
-    }
+    const setFullscreen = () => {
+      if (platform === "android" || platform === "ios" || platform === "mobile_web") {
+        webApp.requestFullscreen();
+      }
+    };
+
+    // تنظیم fullscreen در ابتدا
+    setFullscreen();
 
     // تنظیم وضعیت اولیه بر اساس مسیر فعلی
     if (pathname === "/") {
