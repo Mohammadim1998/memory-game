@@ -18,19 +18,27 @@ export default function EitaaProvider() {
     webApp.isVerticalSwipesEnabled = false;
     webApp.setHeaderColor("#155DFD");
 
-    // تغییر آیکون BackButton
+    // مدیریت BackButton بر اساس مسیر
     if (isHome) {
+      // در صفحه اصلی: نمایش BackButton با رفتار close
+      webApp.BackButton.show();
+      
       webApp.enableClosingConfirmation();
+      
       webApp.BackButton.onClick(() => {
         webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (confirmed) => {
           if (confirmed) webApp.close();
         });
       });
     } else {
+      // در صفحات دیگر: نمایش BackButton با رفتار back
+      webApp.BackButton.show();
+      
+      webApp.disableClosingConfirmation();
+      
       webApp.BackButton.onClick(() => {
         router.back();
       });
-      webApp.disableClosingConfirmation();
     }
 
     // Fullscreen فقط در موبایل
@@ -40,8 +48,8 @@ export default function EitaaProvider() {
 
     // cleanup
     return () => {
-      webApp.MainButton.offClick();
       webApp.BackButton?.offClick();
+      webApp.BackButton?.hide();
     };
   }, [pathname, router]);
 
