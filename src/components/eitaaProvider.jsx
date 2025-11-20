@@ -28,7 +28,8 @@ export default function EitaaProvider() {
     const handleBack = () => {
       if (pathname !== "/") {
         router.back();
-      } else {
+      } else if (pathname === "/") {
+        webApp.BackButton.show();
         webApp.BackButton.isVisible = true;
         webApp.enableClosingConfirmation();
 
