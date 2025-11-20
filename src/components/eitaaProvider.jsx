@@ -6,7 +6,6 @@ import { usePathname, useRouter } from "next/navigation";
 export default function EitaaProvider() {
   const router = useRouter();
   const pathname = usePathname();
-  const [platform, setPlatform] = useState(null);
 
   useEffect(() => {
     if (!window.Eitaa?.WebApp) return;
@@ -16,11 +15,15 @@ export default function EitaaProvider() {
     webApp.ready();
     webApp.expand();
     webApp.isVerticalSwipesEnabled = false;
-    setPlatform(webApp?.platform);
-    if (platform === "android") {
+
+    const platform = webApp.platform;
+    if (
+      platform === "android" ||
+      platform === "ios" ||
+      platform === "mobile_web"
+    ) {
       webApp.requestFullscreen();
     }
-
     const handleBack = () => {
       if (pathname !== "/") {
         router.back();

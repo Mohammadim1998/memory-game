@@ -7,8 +7,6 @@ import { useEffect, useState } from "react";
 export default function Home() {
   const [mounted, setMounted] = useState(false);
   const [user, setUser] = useState(null);
-  const [webApp,setWebApp] =useState(null);
-  const [platform,setPlatform] = useState(null);
 
   // فقط یک بار بعد از مونت شدن (در مرورگر)
   useEffect(() => {
@@ -16,14 +14,10 @@ export default function Home() {
     if (window.Eitaa?.WebApp?.initDataUnsafe?.user) {
       setUser(window.Eitaa.WebApp.initDataUnsafe.user);
     }
-    setWebApp(window.Eitaa.WebApp);
-    setPlatform(webApp?.platform)
+
   }, []);
 
-  const handleShowPlatform = () => {
-    webApp.showConfirm(platform)
-  };
-  // تا وقتی مونت نشده، هیچی نشون نده (یا یه اسکلتون ساده)
+ 
   if (!mounted) {
     return (
       <main className="p-8 min-h-screen bg-gradient-to-b from-purple-50 to-pink-50">
@@ -45,10 +39,6 @@ export default function Home() {
       <p className="text-center text-green-600 text-2xl font-bold">
         سلام {user?.first_name || "کاربر عزیز"}!
       </p>
-
-      <button onClick={handleShowPlatform} className="text-blue-600">
-        Platform
-      </button>
 
       <div className="grid gap-6 max-w-md mx-auto mt-10">
         <Link
