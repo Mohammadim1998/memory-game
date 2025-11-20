@@ -17,7 +17,6 @@ export default function EitaaProvider() {
     webApp.isVerticalSwipesEnabled = false;
     webApp.setHeaderColor("#155DFD");
 
-
     const platform = webApp.platform;
     if (
       platform === "android" ||
@@ -30,8 +29,16 @@ export default function EitaaProvider() {
       if (pathname !== "/") {
         router.back();
       } else {
-        webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (confirmed) => {
-          if (confirmed) webApp.close();
+        webApp.BackButton.isVisible = true;
+        webApp.enableClosingConfirmation();
+
+        webApp.BackButton.onClick(() => {
+          webApp.showConfirm(
+            "آیا می‌خواهید از برنامه خارج شوید؟",
+            (confirmed) => {
+              if (confirmed) webApp.close();
+            }
+          );
         });
       }
     };
