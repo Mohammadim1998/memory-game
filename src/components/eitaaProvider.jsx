@@ -19,20 +19,18 @@ export default function EitaaProvider() {
     webApp.setHeaderColor("#155DFD");
 
     // تغییر آیکون BackButton
-    if (webApp.BackButton) {
-      if (isHome) {
-        webApp.enableClosingConfirmation();
-        webApp.BackButton.onClick(() => {
-          webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (confirmed) => {
-            if (confirmed) webApp.close();
-          });
+    if (isHome) {
+      webApp.enableClosingConfirmation();
+      webApp.BackButton.onClick(() => {
+        webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (confirmed) => {
+          if (confirmed) webApp.close();
         });
-      } else {
-        webApp.BackButton.onClick(() => {
-          router.back();
-        });
-        webApp.disableClosingConfirmation?.();
-      }
+      });
+    } else {
+      webApp.BackButton.onClick(() => {
+        router.back();
+      });
+      webApp.disableClosingConfirmation();
     }
 
     // Fullscreen فقط در موبایل
