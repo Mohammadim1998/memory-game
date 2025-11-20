@@ -31,10 +31,10 @@ export default function EitaaProvider() {
       // صفحه اصلی → BackButton مخفی، MainButton با آیکون close
       webApp.BackButton.hide();
 
-      webApp.MainButton.setText("خروج");
-      webApp.MainButton.show();
+      // webApp.MainButton.setText("خروج");
+      // webApp.MainButton.show();
 
-      webApp.MainButton.onClick(() => {
+      webApp.BackButton.onClick(() => {
         webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (confirmed) => {
           if (confirmed) webApp.close();
         });
