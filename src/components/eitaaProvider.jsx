@@ -15,8 +15,8 @@ export default function EitaaProvider() {
     webApp.ready();
     webApp.expand();
     webApp.isVerticalSwipesEnabled = false;
+    webApp.setHeaderColor("#155DFD");
 
-    webApp.setHeaderBgColor("#155DFD");
 
     const platform = webApp.platform;
     if (
