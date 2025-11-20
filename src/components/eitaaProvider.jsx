@@ -44,11 +44,10 @@ export default function EitaaProvider() {
 
     const handleBack = () => {
       if (pathname === "/") {
-        // وقتی در صفحه اصلی هستیم → دکمه بک به ضربدر تبدیل می‌شه و وب‌اپ رو می‌بنده
         webApp.BackButton.show();
         webApp.BackButton.isVisible = true;
 
-        webApp.enableClosingConfirmation(); // مهم: این باعث نمایش آیکون ضربدر می‌شه
+        webApp.enableClosingConfirmation();
 
         webApp.BackButton.onClick(() => {
           webApp.showConfirm(
@@ -61,9 +60,7 @@ export default function EitaaProvider() {
       } else {
         webApp.disableClosingConfirmation();
         webApp.BackButton.show();
-        webApp.BackButton.onClick(() => {
-          router.back();
-        });
+        router.back();
       }
     };
 
