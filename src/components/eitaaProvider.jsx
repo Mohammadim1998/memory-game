@@ -31,8 +31,8 @@ export default function EitaaProvider() {
         webApp.disableClosingConfirmation();
         router.back();
       } else {
-        webApp.BackButton.hide();
         webApp.enableClosingConfirmation();
+        webApp.BackButton.hide();
         webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (confirmed) => {
           if (confirmed) webApp.close();
         });
@@ -46,7 +46,7 @@ export default function EitaaProvider() {
     return () => {
       webApp.BackButton.offClick(handleBack);
     };
-  }, [pathname]);
+  }, [pathname,router]);
 
   return null;
 }
