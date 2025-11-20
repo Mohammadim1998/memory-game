@@ -21,7 +21,7 @@ export default function EitaaProvider() {
     // مدیریت BackButton بر اساس مسیر
     if (isHome) {
       // در صفحه اصلی: نمایش BackButton و فعال‌سازی تایید خروج
-      webApp.BackButton.show();
+      webApp.BackButton.hide();
       webApp.enableClosingConfirmation();
       
       // وقتی کاربر روی BackButton کلیک می‌کند
@@ -35,7 +35,7 @@ export default function EitaaProvider() {
       
     } else {
       // در صفحات دیگر: نمایش BackButton با رفتار back
-      webApp.BackButton.hide();
+      webApp.BackButton.show();
       webApp.disableClosingConfirmation();
       
       webApp.BackButton.onClick(() => {
