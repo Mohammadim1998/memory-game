@@ -33,14 +33,12 @@ export default function EitaaProvider() {
         webApp.BackButton.isVisible = true;
         webApp.enableClosingConfirmation();
 
-        webApp.BackButton.onClick(() => {
-          webApp.showConfirm(
-            "آیا می‌خواهید از برنامه خارج شوید؟",
-            (confirmed) => {
-              if (confirmed) webApp.close();
-            }
-          );
-        });
+        webApp.showConfirm(
+          "آیا می‌خواهید از برنامه خارج شوید؟",
+          (confirmed) => {
+            if (confirmed) webApp.close();
+          }
+        );
       }
     };
 
