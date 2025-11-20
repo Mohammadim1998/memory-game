@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function EitaaProvider() {
   const router = useRouter();
   const pathname = usePathname();
+  const [platform, setPlatform] = useState(null);
 
   useEffect(() => {
     if (!window.Eitaa?.WebApp) return;
@@ -15,7 +16,10 @@ export default function EitaaProvider() {
     webApp.ready();
     webApp.expand();
     webApp.isVerticalSwipesEnabled = false;
-    webApp.requestFullscreen()
+    setPlatform(webApp.platform);
+    if (platform === "android") {
+      webApp.requestFullscreen();
+    }
 
     const handleBack = () => {
       if (pathname !== "/") {
