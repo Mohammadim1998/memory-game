@@ -35,7 +35,7 @@ export default function EitaaProvider() {
       
     } else {
       // در صفحات دیگر: نمایش BackButton با رفتار back
-      webApp.BackButton.show();
+      webApp.BackButton.hide();
       webApp.disableClosingConfirmation();
       
       webApp.BackButton.onClick(() => {
