@@ -25,11 +25,6 @@ export default function EitaaProvider() {
       
       webApp.enableClosingConfirmation();
       
-      webApp.BackButton.onClick(() => {
-        webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (confirmed) => {
-          if (confirmed) webApp.close();
-        });
-      });
     } else {
       // در صفحات دیگر: نمایش BackButton با رفتار back
       webApp.BackButton.show();
