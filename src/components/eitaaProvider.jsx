@@ -18,6 +18,8 @@ export default function EitaaProvider() {
     webApp.setHeaderColor("#155DFD");
 
     const platform = webApp.platform;
+    
+    // تابع برای تنظیم fullscreen
     const setFullscreen = () => {
       if (platform === "android" || platform === "ios" || platform === "mobile_web") {
         webApp.requestFullscreen();
@@ -29,33 +31,50 @@ export default function EitaaProvider() {
 
     // تنظیم وضعیت اولیه بر اساس مسیر فعلی
     if (pathname === "/") {
-      // در صفحه اصلی: مخفی کردن BackButton و فعال کردن تایید خروج
       webApp.BackButton.hide();
       webApp.enableClosingConfirmation();
     } else {
-      // در صفحات دیگر: نمایش BackButton و غیرفعال کردن تایید خروج
       webApp.BackButton.show();
       webApp.disableClosingConfirmation();
     }
 
     const handleBack = () => {
       if (pathname !== "/") {
-        // در صفحات دیگر: بازگشت به صفحه قبلی
         router.back();
       } else {
-        // در صفحه اصلی: نمایش پیام تایید برای خروج
         webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (confirmed) => {
           if (confirmed) webApp.close();
         });
       }
     };
 
-    // همیشه event listener را تنظیم کنیم
     webApp.BackButton.offClick();
     webApp.BackButton.onClick(handleBack);
 
+    // اضافه کردن event listener برای زمانی که برنامه دوباره visible می‌شود
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        // وقتی صفحه دوباره visible شد، fullscreen را تنظیم کن
+        setTimeout(setFullscreen, 100); // تاخیر کوچک برای اطمینان
+      }
+    };
+
+    // همچنین برای eventهای مربوط به بازگشت اپ از حالت minimize
+    const handleResize = () => {
+      setTimeout(setFullscreen, 100);
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("resize", handleResize);
+    
+    // همچنین از eventهای داخلی Eitaa استفاده می‌کنیم
+    webApp.onEvent('viewportChanged', setFullscreen);
+
     return () => {
       webApp.BackButton.offClick(handleBack);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("resize", handleResize);
+      webApp.offEvent('viewportChanged', setFullscreen);
     };
   }, [pathname, router]);
 
