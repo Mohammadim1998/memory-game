@@ -11,41 +11,35 @@ export default function EitaaProvider() {
     if (!window.Eitaa?.WebApp) return;
 
     const webApp = window.Eitaa.WebApp;
-    const isHome = pathname === "/" || pathname === "/home";
+    const isHome = pathname === "/" || pathname === "/home"; // در صورت نیاز /home رو هم اضافه کن
 
     webApp.ready();
     webApp.expand();
     webApp.isVerticalSwipesEnabled = false;
     webApp.setHeaderColor("#155DFD");
 
-    // Fullscreen فقط در موبایل
     if (["android", "ios", "mobile_web"].includes(webApp.platform)) {
       webApp.requestFullscreen();
     }
 
-    // پاک کردن همه listenerهای قبلی
+    // خیلی مهم: اول همه listenerها رو پاک کن
     webApp.BackButton.offClick();
-    webApp.MainButton.offClick();
 
     if (isHome) {
-      // صفحه اصلی → BackButton مخفی، MainButton با آیکون close
-      webApp.BackButton.hide();
+      // صفحه اصلی → آیکون به ✕ تبدیل می‌شه
+      webApp.enableClosingConfirmation();   // این خط آیکون رو به ضربدر تبدیل می‌کنه
+      webApp.BackButton.show();              // دوباره show کن (حتماً بعد از enable)
 
-      webApp.MainButton.setText("خروج");
-      // webApp.MainButton.setBackgroundColor("#e74c3c"); // قرمز یا هر رنگی که دوست داری
-      // webApp.MainButton.setTextColor("#ffffff");
-      webApp.MainButton.show();
-
-      webApp.MainButton.onClick(() => {
+      webApp.BackButton.onClick(() => {
         webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (confirmed) => {
           if (confirmed) webApp.close();
         });
       });
     } else {
-      // صفحات دیگر → BackButton معمولی، MainButton مخفی
-      webApp.MainButton.hide();
-
+      // صفحات دیگر → آیکون معمولی ←
+      webApp.disableClosingConfirmation();   // آیکون به فلش برمی‌گرده
       webApp.BackButton.show();
+
       webApp.BackButton.onClick(() => {
         router.back();
       });
@@ -54,7 +48,6 @@ export default function EitaaProvider() {
     // cleanup
     return () => {
       webApp.BackButton.offClick();
-      webApp.MainButton.offClick();
     };
   }, [pathname, router]);
 
