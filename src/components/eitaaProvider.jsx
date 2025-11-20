@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 
 export default function EitaaProvider() {
@@ -11,56 +11,38 @@ export default function EitaaProvider() {
     if (!window.Eitaa?.WebApp) return;
 
     const webApp = window.Eitaa.WebApp;
-    const isHome = pathname === "/";
 
     webApp.ready();
     webApp.expand();
     webApp.isVerticalSwipesEnabled = false;
     webApp.setHeaderColor("#155DFD");
 
-    // مدیریت BackButton بر اساس مسیر
-    if (isHome) {
-      // در صفحه اصلی: مخفی کردن BackButton و فعال‌سازی تایید خروج
-      webApp.BackButton.hide();
-      webApp.enableClosingConfirmation();
-    } else {
-      // در صفحات دیگر: نمایش BackButton با رفتار back
-      webApp.BackButton.show();
-      webApp.disableClosingConfirmation();
-
-      webApp.BackButton.onClick(() => {
-        // استفاده از replace به جای back برای جلوگیری از حلقه بی‌نهایت
-        router.back();
-      });
-    }
-
-    // مدیریت event بستن اپ
-    const handleClosing = () => {
-      if (isHome) {
-        webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (confirmed) => {
-          if (confirmed) {
-            webApp.close();
-          }
-        });
-        return false; // جلوگیری از بستن فوری
-      }
-      return true;
-    };
-
-    // اضافه کردن event listener برای بستن
-    webApp.onEvent("closingConfirmation", handleClosing);
-
-    // Fullscreen فقط در موبایل
-    if (["android", "ios", "mobile_web"].includes(webApp.platform)) {
+    const platform = webApp.platform;
+    if (
+      platform === "android" ||
+      platform === "ios" ||
+      platform === "mobile_web"
+    ) {
       webApp.requestFullscreen();
     }
-
-    // cleanup
-    return () => {
-      webApp.BackButton?.offClick();
-      webApp.offEvent("closingConfirmation", handleClosing);
+    const handleBack = () => {
+      if (pathname !== "/") {
+        router.back();
+      } else {
+        webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (confirmed) => {
+          if (confirmed) webApp.close();
+        });
+      }
     };
-  }, [pathname, router]);
+
+    webApp.BackButton.show();
+    webApp.BackButton.offClick();
+    webApp.BackButton.onClick(handleBack);
+
+    return () => {
+      webApp.BackButton.offClick(handleBack);
+    };
+  }, [pathname]);
 
   return null;
 }
