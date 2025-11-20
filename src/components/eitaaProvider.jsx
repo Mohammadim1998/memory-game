@@ -50,6 +50,8 @@ export default function EitaaProvider() {
       }
     };
 
+    updateBackButton();
+
     webApp.BackButton.show();
     webApp.BackButton.offClick();
     webApp.BackButton.onClick(handleBack);
