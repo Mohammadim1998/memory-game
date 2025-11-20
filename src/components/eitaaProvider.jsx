@@ -27,8 +27,12 @@ export default function EitaaProvider() {
     }
     const handleBack = () => {
       if (pathname !== "/") {
+        webApp.BackButton.show();
+        webApp.disableClosingConfirmation();
         router.back();
       } else {
+        webApp.BackButton.hide();
+        webApp.enableClosingConfirmation();
         webApp.showConfirm("آیا می‌خواهید خارج شوید؟", (confirmed) => {
           if (confirmed) webApp.close();
         });
