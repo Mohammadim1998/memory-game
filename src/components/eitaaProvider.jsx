@@ -16,7 +16,7 @@ export default function EitaaProvider() {
     webApp.ready();
     webApp.expand();
     webApp.isVerticalSwipesEnabled = false;
-    setPlatform(webApp.platform);
+    setPlatform(webApp?.platform);
     if (platform === "android") {
       webApp.requestFullscreen();
     }
