@@ -52,12 +52,13 @@ export default function EitaaProvider() {
 
     updateBackButton();
 
-    webApp.BackButton.show();
-    webApp.BackButton.offClick();
-    webApp.BackButton.onClick(handleBack);
+    // webApp.BackButton.show();
+    // webApp.BackButton.offClick();
+    // webApp.BackButton.onClick(handleBack);
 
     return () => {
-      webApp.BackButton.offClick(handleBack);
+     webApp.BackButton.offClick();
+      webApp.disableClosingConfirmation();
     };
   }, [pathname,router]);
 
