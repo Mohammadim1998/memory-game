@@ -25,42 +25,28 @@ export default function EitaaProvider() {
     ) {
       webApp.requestFullscreen();
     }
-    // const handleBack = () => {
-    //   if (pathname !== "/") {
-    //     router.back();
-    //   } else if (pathname === "/") {
-    //     webApp.BackButton.show();
-    //     webApp.BackButton.isVisible = true;
-    //     webApp.enableClosingConfirmation();
 
-    //     webApp.showConfirm(
-    //       "آیا می‌خواهید از برنامه خارج شوید؟",
-    //       (confirmed) => {
-    //         if (confirmed) webApp.close();
-    //       }
-    //     );
-    //   }
-    // };
+   const updateBackButton = () => {
+      webApp.BackButton.offClick(); // اول همه event listenerهای قبلی رو پاک کن
 
-    const handleBack = () => {
       if (pathname === "/") {
-        webApp.BackButton.show();
-        webApp.BackButton.isVisible = true;
-
-        webApp.enableClosingConfirmation();
+        // صفحه اصلی: آیکون به ✕ تبدیل می‌شه + confirm
+        webApp.enableClosingConfirmation(); // این خط آیکون رو به ضربدر تغییر می‌ده
+        webApp.BackButton.show(); // مطمئن شو visible باشه
 
         webApp.BackButton.onClick(() => {
-          webApp.showConfirm(
-            "آیا می‌خواهید از برنامه خارج شوید؟",
-            (confirmed) => {
-              if (confirmed) webApp.close();
-            }
-          );
+          webApp.showConfirm("آیا می‌خواهید از برنامه خارج شوید؟", (confirmed) => {
+            if (confirmed) webApp.close();
+          });
         });
       } else {
-        webApp.disableClosingConfirmation();
+        // صفحات دیگه: آیکون فلش معمولی + back
+        webApp.disableClosingConfirmation(); // آیکون به فلش برمی‌گرده
         webApp.BackButton.show();
-        router.back();
+
+        webApp.BackButton.onClick(() => {
+          router.back();
+        });
       }
     };
 
@@ -71,7 +57,7 @@ export default function EitaaProvider() {
     return () => {
       webApp.BackButton.offClick(handleBack);
     };
-  }, [pathname]);
+  }, [pathname,router]);
 
   return null;
 }
