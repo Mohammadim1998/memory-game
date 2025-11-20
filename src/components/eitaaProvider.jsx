@@ -15,6 +15,7 @@ export default function EitaaProvider() {
     webApp.ready();
     webApp.expand();
     webApp.isVerticalSwipesEnabled = false;
+    webApp.requestFullscreen()
 
     const handleBack = () => {
       if (pathname !== "/") {
